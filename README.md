@@ -92,8 +92,6 @@ http://localhost:5173
 - Protected routes
 - Password hashing with bcrypt
 - Change password feature
-
-## Author
 ## Additional Features
 
 In addition to the core internship requirements, I added extra features to make the project more practical and professional:
@@ -107,4 +105,5 @@ In addition to the core internship requirements, I added extra features to make 
 - Secure password change feature
 - Improved dashboard with progress overview
 - Improved UI with active navigation tabs and responsive design
+## Author
 Built as part of the Codveda Web Development Internship.
