@@ -94,5 +94,17 @@ http://localhost:5173
 - Change password feature
 
 ## Author
+## Additional Features
 
+In addition to the core internship requirements, I added extra features to make the project more practical and professional:
+
+- Project search by title and description
+- Task search by title, description, and project name
+- Task filtering by status
+- Task due dates
+- Priority badges with different colors
+- User profile page
+- Secure password change feature
+- Improved dashboard with progress overview
+- Improved UI with active navigation tabs and responsive design
 Built as part of the Codveda Web Development Internship.
