@@ -70,7 +70,10 @@ router.delete("/:id", protect, async (req, res) => {
       return res.status(404).json({ message: "Project not found" });
     }
 
-    await Task.deleteMany({ project: req.params.id, user: req.user.id });
+    await Task.deleteMany({
+      project: req.params.id,
+      user: req.user.id
+    });
 
     res.json({ message: "Project and related tasks deleted successfully" });
   } catch (error) {

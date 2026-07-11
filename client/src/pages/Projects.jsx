@@ -13,7 +13,7 @@ function Projects() {
   const [editingId, setEditingId] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-
+const [searchTerm, setSearchTerm] = useState("");
   const fetchProjects = async () => {
     try {
       const res = await API.get("/projects");
@@ -96,7 +96,14 @@ function Projects() {
       setError("Failed to delete project.");
     }
   };
+const filteredProjects = projects.filter((project) => {
+  const search = searchTerm.toLowerCase();
 
+  return (
+    project.title.toLowerCase().includes(search) ||
+    (project.description || "").toLowerCase().includes(search)
+  );
+});
   return (
     <>
       <Navbar />
@@ -143,15 +150,35 @@ function Projects() {
             )}
           </div>
         </form>
+<div className="search-box search-box-projects">
+  <span className="search-icon">🔎</span>
 
+  <input
+    type="text"
+    placeholder="Search projects by title or description..."
+    value={searchTerm}
+    onChange={(e) => setSearchTerm(e.target.value)}
+  />
+
+  {searchTerm && (
+    <button
+      type="button"
+      className="clear-search-btn"
+      onClick={() => setSearchTerm("")}
+    >
+      ×
+    </button>
+  )}
+
+</div>
         {loading ? (
           <p>Loading projects...</p>
         ) : (
           <div className="cards-grid">
-            {projects.length === 0 ? (
+            {filteredProjects.length === 0 ? (
               <p>No projects yet. Create your first project.</p>
             ) : (
-              projects.map((project) => (
+              filteredProjects.map((project) => (
                 <div className="item-card" key={project._id}>
                   <h3>{project.title}</h3>
                   <p>{project.description || "No description provided."}</p>

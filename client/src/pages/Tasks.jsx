@@ -7,15 +7,17 @@ function Tasks() {
   const [projects, setProjects] = useState([]);
 
   const [formData, setFormData] = useState({
-    title: "",
-    description: "",
-    status: "pending",
-    priority: "medium",
-    project: ""
-  });
+  title: "",
+  description: "",
+  status: "pending",
+  priority: "medium",
+  dueDate: "",
+  project: ""
+});
 
   const [editingId, setEditingId] = useState(null);
   const [filter, setFilter] = useState("all");
+  const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -62,12 +64,13 @@ function Tasks() {
       }
 
       setFormData({
-        title: "",
-        description: "",
-        status: "pending",
-        priority: "medium",
-        project: ""
-      });
+  title: "",
+  description: "",
+  status: "pending",
+  priority: "medium",
+  dueDate: "",
+  project: ""
+});
 
       fetchData();
     } catch (err) {
@@ -79,24 +82,26 @@ function Tasks() {
     setEditingId(task._id);
 
     setFormData({
-      title: task.title,
-      description: task.description || "",
-      status: task.status,
-      priority: task.priority,
-      project: task.project?._id || task.project
-    });
+  title: task.title,
+  description: task.description || "",
+  status: task.status,
+  priority: task.priority,
+  dueDate: task.dueDate ? task.dueDate.slice(0, 10) : "",
+  project: task.project?._id || task.project
+});
   };
 
   const handleCancelEdit = () => {
     setEditingId(null);
 
     setFormData({
-      title: "",
-      description: "",
-      status: "pending",
-      priority: "medium",
-      project: ""
-    });
+  title: "",
+  description: "",
+  status: "pending",
+  priority: "medium",
+  dueDate: "",
+  project: ""
+});
   };
 
   const handleDelete = async (id) => {
@@ -112,10 +117,18 @@ function Tasks() {
     }
   };
 
-  const filteredTasks =
-    filter === "all"
-      ? tasks
-      : tasks.filter((task) => task.status === filter);
+ const filteredTasks = tasks.filter((task) => {
+  const matchesStatus = filter === "all" || task.status === filter;
+
+  const search = searchTerm.toLowerCase();
+
+  const matchesSearch =
+    task.title.toLowerCase().includes(search) ||
+    (task.description || "").toLowerCase().includes(search) ||
+    (task.project?.title || "").toLowerCase().includes(search);
+
+  return matchesStatus && matchesSearch;
+});
 
   return (
     <>
@@ -175,6 +188,12 @@ function Tasks() {
             <option value="low">Low Priority</option>
             <option value="medium">Medium Priority</option>
             <option value="high">High Priority</option>
+            <input
+  type="date"
+  name="dueDate"
+  value={formData.dueDate}
+  onChange={handleChange}
+/>
           </select>
 
           <div className="form-actions">
@@ -193,7 +212,26 @@ function Tasks() {
             )}
           </div>
         </form>
+<div className="search-box search-box-tasks">
+  <span className="search-icon">🔎</span>
 
+  <input
+    type="text"
+    placeholder="Search tasks by title, description, or project..."
+    value={searchTerm}
+    onChange={(e) => setSearchTerm(e.target.value)}
+  />
+
+  {searchTerm && (
+    <button
+      type="button"
+      className="clear-search-btn"
+      onClick={() => setSearchTerm("")}
+    >
+      ×
+    </button>
+  )}
+</div>
         <div className="filters">
           <button onClick={() => setFilter("all")}>All</button>
           <button onClick={() => setFilter("pending")}>Pending</button>
@@ -226,8 +264,18 @@ function Tasks() {
                   </p>
 
                   <p>
-                    <strong>Priority:</strong> {task.priority}
-                  </p>
+  <strong>Priority:</strong>{" "}
+  <span className={`priority-badge ${task.priority}`}>
+    {task.priority}
+  </span>
+</p>
+
+<p>
+  <strong>Due Date:</strong>{" "}
+  {task.dueDate
+    ? new Date(task.dueDate).toLocaleDateString()
+    : "No due date"}
+</p>
 
                   <div className="card-actions">
                     <button onClick={() => handleEdit(task)}>Edit</button>

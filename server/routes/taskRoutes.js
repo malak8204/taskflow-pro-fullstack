@@ -21,8 +21,7 @@ router.get("/", protect, async (req, res) => {
 // Create task
 router.post("/", protect, async (req, res) => {
   try {
-    const { title, description, status, priority, project } = req.body;
-
+    const { title, description, status, priority, dueDate, project } = req.body;
     if (!title || !project) {
       return res.status(400).json({
         message: "Task title and project are required"
@@ -39,13 +38,14 @@ router.post("/", protect, async (req, res) => {
     }
 
     const task = await Task.create({
-      title,
-      description,
-      status,
-      priority,
-      project,
-      user: req.user.id
-    });
+  title,
+  description,
+  status,
+  priority,
+  dueDate,
+  project,
+  user: req.user.id
+});
 
     res.status(201).json(task);
   } catch (error) {
